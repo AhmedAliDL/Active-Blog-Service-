@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Active Blog Service.props" />
+</Project>
