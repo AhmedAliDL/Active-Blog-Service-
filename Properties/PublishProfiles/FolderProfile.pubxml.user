@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\.NetDeveloper\MVC Projects\Active Blog Service\bin\Release\net8.0\publish\</_PublishTargetUrl>
+    <History>True|2024-09-17T04:46:48.9941197Z||;True|2024-09-17T07:29:06.0161630+03:00||;True|2024-09-14T15:18:46.1646138+03:00||;True|2024-09-13T11:30:00.2843181+03:00||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>

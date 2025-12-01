@@ -1,0 +1,175 @@
+﻿@inject UserManager<User> _userManager
+@inject IBlogRepository _blogRepository
+@{
+    ViewData["Title"] = "Home Page";
+    var blogs = _blogRepository.GetFromLast(3);
+    //var user = await _userManager.FindByEmailAsync(User.Identity.Name);
+
+}
+
+<!-- About Section -->
+<section id="about" class="about section">
+
+    <div class="container">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-lg-7 mb-5 mb-lg-0 order-lg-2" data-aos="fade-up" data-aos-delay="400">
+                <div class="swiper init-swiper">
+                    <script type="application/json" class="swiper-config">
+                        {
+                          "loop": true,
+                          "speed": 600,
+                          "autoplay": {
+                            "delay": 5000
+                          },
+                          "slidesPerView": "auto",
+                          "pagination": {
+                            "el": ".swiper-pagination",
+                            "type": "bullets",
+                            "clickable": true
+                          },
+                          "breakpoints": {
+                            "320": {
+                              "slidesPerView": 1,
+                              "spaceBetween": 40
+                            },
+                            "1200": {
+                              "slidesPerView": 1,
+                              "spaceBetween": 1
+                            }
+                          }
+                        }
+                    </script>
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="/img/img_hh_6.jpg" style="width:500px;height:500px" alt="Image" class="img-fluid">
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="/img/img_hh_7.jpg" style="width:500px;height:500px" alt="Image" class="img-flu id">
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="/img/img_hhh_8.jpg" style="width:500px;height:500px" alt="Image" class="img-fluid">
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+            <div class="col-lg-4 order-lg-1">
+                <span class="section-subtitle" data-aos="fade-up">Welcome</span>
+                <h1 class="mb-4" data-aos="fade-up">
+                    Explore insightful stories and valuable knowledge shared by experts and passionate writers
+                </h1>
+                <p data-aos="fade-up">
+                    Dive into a world where creativity and knowledge meet, providing thoughtful insights into everyday challenges. Our community thrives on meaningful discussions and ideas.
+
+                    In a distant land, beyond the borders of traditional media, we bring you a curated selection of articles and stories that resonate with your interests and inspire your curiosity.
+                </p>
+                <p class="mt-5" data-aos="fade-up">
+                    <a href="/Blog/Add" class="btn btn-get-started">Get Started</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section><!-- /About Section -->
+<!-- Blog Posts Section -->
+<section id="blog-posts" class="blog-posts section">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <p>Recent Posts</p>
+        <h2>Blog Posts</h2>
+    </div><!-- End Section Title -->
+    <div class="container">
+
+        <div class="row gy-4">
+            @foreach (Blog blog in blogs)
+            {
+                var blogUser = await _userManager.FindByIdAsync(blog.UserId);
+                <div class="col-md-6 col-lg-4">
+                    <div class="post-entry" data-aos="fade-up" data-aos-delay="100">
+                        <a href="/Blog/Details/@blog.Id" class="thumb d-block">
+                            <img src="@blog.Image" alt="Image" class="img-fluid rounded fixed-size-image">
+                        </a>
+
+                    <div class="post-content">
+                        <div class="meta">
+                            <a class="cat">@blog.Category</a> •
+                            <span class="date">@blog.CreatedDate.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                        <h3>@blog.Title</h3>
+
+                        <div class="d-flex author align-items-center">
+                            <div class="pic">
+                                    <img src="@blogUser.Image" style="width:100px;height:60px" alt="Image"  class="img-fluid rounded-circle">
+                            </div>
+                            <div class="author-name">
+                                    <strong class="d-block">@blogUser.FName @blogUser.LName</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            }       
+        </div>
+    </div>
+</section><!-- /Blog Posts Section -->
+<!-- Faq Section -->
+<section id="faq" class="faq section">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <p>Plans</p>
+        <h2>Frequently Asked Questions</h2>
+    </div><!-- End Section Title -->
+
+    <div class="container" data-aos="fade-up">
+        <div class="row">
+            <div class="col-12">
+                <div class="custom-accordion" id="accordion-faq">
+                    <div class="accordion-item">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-faq-1">
+                                How to register?
+                            </button>
+                        </h2>
+
+                        <div id="collapse-faq-1" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion-faq">
+                            <div class="accordion-body">
+                                Click 'Get Started' to navigate to the registration page, where you can easily enter your details and begin your journey
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .accordion-item -->
+
+                    <div class="accordion-item">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-faq-2" aria-expanded="false" aria-controls="collapse-faq-2">
+                                How to create a blog?
+                            </button>
+                        </h2>
+                        <div id="collapse-faq-2" class="collapse" aria-labelledby="headingTwo" data-bs-parent="#accordion-faq">
+                            <div class="accordion-body">
+                                From the navigation bar, you'll find an 'Add Blog' option in the dropdown menu. Click on it, then fill in the required details: title, category, blog image, and content.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .accordion-item -->
+
+                    <div class="accordion-item">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-faq-3">
+                                How to edit a blog?
+                            </button>
+                        </h2>
+
+                        <div id="collapse-faq-3" class="collapse" aria-labelledby="headingThree" data-parent="#accordion-faq">
+                            <div class="accordion-body">
+                                From the navigation bar, select the 'Edit Blog' option in the dropdown menu. A list of all your blogs will appear—simply choose the one you'd like to update. After selecting, edit the necessary details such as the title, category, blog image, and content.
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .accordion-item -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!-- /Faq Section -->

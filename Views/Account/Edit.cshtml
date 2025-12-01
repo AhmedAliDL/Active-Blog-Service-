@@ -1,0 +1,106 @@
+﻿@model AccountEditViewModel
+@inject UserManager<User> _userManager
+@{
+    Layout = "_ActiveLayout";
+    ViewData["Title"] = "Edit Profile Page";
+
+    var user = await _userManager.FindByEmailAsync(User.Identity.Name);
+}
+
+<div id="layoutAuthentication">
+    <div id="layoutAuthentication_content">
+        <main>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow-lg border-0 rounded-lg mt-5">
+                            <div class="card-header text-center">
+                                <h3 class="text-center font-weight-light my-4">User Account</h3>
+                                <div class="d-flex justify-content-center my-3">
+                                    <img src="@user.Image" alt="User Image" class="img-fluid rounded-circle shadow-lg" style="width: 150px; height: 150px; object-fit: cover;">
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                                    <div asp-validation-summary="All" class="text-danger mt-3"></div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">First Name</label>
+                                            <input asp-for="FName" class="form-control shadow-sm" value="@user.FName" type="text" />
+                                            <span asp-validation-for="FName" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Last Name</label>
+                                            <input asp-for="LName" class="form-control shadow-sm" value="@user.LName" type="text" />
+                                            <span asp-validation-for="LName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Email Address</label>
+                                        <input asp-for="Email" class="form-control shadow-sm" value="@user.Email" type="email" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Phone Number</label>
+                                        <input asp-for="Phone" class="form-control shadow-sm" value="@user.PhoneNumber" type="tel" />
+                                        <span asp-validation-for="Phone" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <input asp-for="Address" class="form-control shadow-sm" value="@user.Address" type="text" />
+                                        <span asp-validation-for="Address" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label>Create a new password</label>
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input asp-for="Password" class="form-control" id="inputPassword" type="password" placeholder="Create a new password" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>Confirm new password</label>
+                                            <div class="form-floating mb-3 mb-md-0">
+                                                <input asp-for="ConfirmPassword" class="form-control" id="inputPasswordConfirm" type="password" placeholder="Confirm new password" />
+                                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <span>Change Profile Image:</span>
+                                        <input asp-for="ImageFile" id="inputImage" type="file" accept="image/*" placeholder="Upload Image" />
+                                        <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="mt-4 mb-0">
+                                        <div class="d-grid">
+                                            <input type="submit" class="btn btn-primary btn-block" value="Save Changes" />
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <br />
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

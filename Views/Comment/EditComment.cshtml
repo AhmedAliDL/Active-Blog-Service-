@@ -1,0 +1,32 @@
+﻿@model Comment
+@{
+    ViewData["Title"] = "Edit Comment";
+}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Edit Comment</h1>
+    <form asp-action="SaveCommentEdit" asp-route-commentId="@Model.Id" asp-controller="Comment" method="post">
+        <!-- Display validation errors -->
+        <div asp-validation-summary="All" class="text-danger mt-3"></div>
+
+        <!-- Comment Content -->
+        <div class="form-floating mb-3">
+            <input asp-for="CommentContent" id="inputContent" type="text" class="form-control" placeholder="Enter comment content" />
+            <label asp-for="CommentContent">Comment Content</label>
+            <span asp-validation-for="CommentContent" class="text-danger"></span>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-4 mb-0">
+            <div class="d-grid">
+                <input type="submit" class="btn btn-primary btn-block" value="Save Changes" />
+            </div>
+        </div>
+    </form>
+    <br />
+</div>
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

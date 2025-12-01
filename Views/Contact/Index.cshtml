@@ -1,0 +1,170 @@
+﻿@model SendMailViewModel
+@inject UserManager<User> _userManager
+@{
+    ViewData["Title"] = "Contact Page";
+    var email = User.Identity.Name;
+    var currentUser = await _userManager.FindByEmailAsync(email!);
+}
+
+<!-- Page Title -->
+<div class="page-title light-background">
+    <div class="container">
+        <h1>Contact</h1>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a href="/">Home</a></li>
+                <li class="current">Contact</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<!-- End Page Title -->
+
+<!-- Contact Section -->
+<section id="contact" class="contact section">
+    <div class="container" data-aos="fade">
+        <div class="row gy-5 gx-lg-5">
+            <!-- Contact Info -->
+            <div class="col-lg-4">
+                <div class="info">
+                    <h3>Get in touch</h3>
+                    <p>Please feel free to reach out to us with any inquiries or comments.</p>
+
+                    <div class="info-item d-flex">
+                        <i class="bi bi-geo-alt flex-shrink-0"></i>
+                        <div>
+                            <h4>Location:</h4>
+                            <p>A108 Adam Street, New York, NY 535022</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item d-flex">
+                        <i class="bi bi-envelope flex-shrink-0"></i>
+                        <div>
+                            <h4>Email:</h4>
+                            <p>coinershot@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item d-flex">
+                        <i class="bi bi-phone flex-shrink-0"></i>
+                        <div>
+                            <h4>Call:</h4>
+                            <p>+20 01094921068</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Contact Info -->
+
+            <!-- Contact Form -->
+            <div class="col-lg-8">
+                <form id="contactForm" asp-action="SendEmail" asp-controller="Contact" method="post">
+                    <div asp-validation-summary="All" class="text-danger mt-3"></div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required value="@($"{currentUser.FName} {currentUser.LName}")">
+                        </div>
+                        <div class="col-md-6 form-group mt-3 mt-md-0">
+                            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required value="@email">
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" asp-for="Subject" class="form-control" id="subject" placeholder="Subject" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <textarea asp-for="Body" style="height: 250px;" class="form-control" id="message" placeholder="Message" required></textarea>
+                    </div>
+                    <br />
+                    <div class="text-center">
+                        <input type="submit" id="submitBtn" class="btn btn-success" value="Send Message" />
+                        <input type="hidden" id="userId" value="@currentUser.Id" />
+                    </div>
+                </form>
+                <div id="cooldownMessage" class="alert alert-warning" style="display:none;">
+                    You have submitted your message. Please wait 1 minute before sending another.
+                </div>
+            </div>
+            <!-- End Contact Form -->
+        </div>
+    </div>
+</section>
+
+<!-- Scroll Top Button -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short"></i>
+</a>
+
+<!-- Main JS File -->
+<script src="/js/main.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const submitBtn = document.getElementById("submitBtn");
+        const userId = document.getElementById("userId").value;
+        const cooldownMessage = document.getElementById("cooldownMessage");
+        const contactForm = document.getElementById("contactForm");
+        const subjectField = document.getElementById("subject");
+        const bodyField = document.getElementById("message");
+
+        // Check for existing cooldown in localStorage
+        const cooldownEndTime = localStorage.getItem(`cooldownEndTime_${userId}`);
+        if (cooldownEndTime && new Date().getTime() < cooldownEndTime) {
+            const remainingTime = cooldownEndTime - new Date().getTime();
+            disableButton(remainingTime);
+        }
+
+        // Function to disable the button and show cooldown message
+        function disableButton(milliseconds) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Please wait before sending another message...";
+            cooldownMessage.style.display = "block";
+
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Send Message";
+                cooldownMessage.style.display = "none";
+                localStorage.removeItem(`cooldownEndTime_${userId}`);
+            }, milliseconds);
+        }
+
+        // Form submission handler
+        contactForm.onsubmit = async function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Immediately show the cooldown message and disable the button
+            const cooldownTime = 1 * 60 * 1000; // 1 minute in milliseconds
+            disableButton(cooldownTime);
+            localStorage.setItem(`cooldownEndTime_${userId}`, new Date().getTime() + cooldownTime);
+
+            // Proceed with the form submission (using fetch for async call)
+            const formData = new FormData(this);
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                const remainingTime = result.remainingTime;
+                localStorage.setItem(`cooldownEndTime_${userId}`, new Date().getTime() + remainingTime);
+                disableButton(remainingTime);
+            } else {
+                // Handle successful form submission
+                submitBtn.textContent = "Message Sent!";
+                
+                // Clear the subject and body fields
+                subjectField.value = "";
+                bodyField.value = "";
+            }
+        };
+    });
+</script>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,64 @@
+﻿@model List<Blog>
+@{
+    ViewData["Title"] = "Delete Blog";
+
+    // Creating a SelectList for the dropdown
+    var selectBlogList = new SelectList(Model, "Id", "Title");
+}
+
+
+<div class="container mt-4">
+
+    <h1 class="text-center mb-4">Select a Blog to Delete</h1>
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">
+            No blogs are available to delete at the moment.
+        </div>
+    }
+    else
+    {
+        <form method="post" asp-action="DeleteBlog" asp-controller="Blog" id="deleteBlogForm">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <!-- Label for the select element -->
+                                <label for="blogSelect">Choose a Blog:</label>
+
+                                <!-- Styled select element -->
+                                <select asp-items="selectBlogList" id="blogSelect" class="form-control" name="blogId" required></select>
+                            </div>
+                            <br />
+                            <!-- Submit button with Bootstrap styling -->
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-danger" id="deleteBtn">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+        <br/>
+    }
+
+</div>
+
+<!-- JavaScript for Confirmation Dialog -->
+<script>
+    document.getElementById('deleteBlogForm').addEventListener('submit', function (event) {
+        var selectElement = document.getElementById('blogSelect');
+        if (selectElement && selectElement.value === "") {
+            alert("Please select a blog to delete.");
+            event.preventDefault();
+        } else {
+            var confirmation = confirm("Are you sure you want to delete this blog? This action cannot be undone.");
+            if (!confirmation) {
+                event.preventDefault();
+            }
+        }
+    });
+</script>
+<partial src="_ValidationScriptsPartial"></partial>

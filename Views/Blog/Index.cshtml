@@ -1,0 +1,76 @@
+﻿@model PaginationBlogViewModel
+@inject UserManager<User> _userManager
+@{
+    ViewData["Title"] = "Blog View Page";
+}
+<div class="page-title light-background">
+    <div class="container">
+        <h1>Blog</h1>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                <li class="current">Blog</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Blog Posts Horizontal Section -->
+<section id="blog-posts-horizontal" class="blog-posts-horizontal section">
+    <div class="container">
+        <div class="blog-posts-wrapper">
+            @{
+                var blogs = Model.ShowBlogList;
+                var blogsPerPage = blogs.Skip(Model.PageSize * (Model.Currentpage - 1))
+                .Take(Model.PageSize);
+                foreach (var blog in blogsPerPage)
+                {
+                    var user = await _userManager.FindByIdAsync(blog.UserId);
+                    <article class="blog-post">
+                        <div class="post-img">
+                            <img src="@blog.Image" alt="Blog Image" class="img-fluid">
+                        </div>
+                        <div class="post-content">
+                            <div class="meta-top">
+                                <ul>
+                                    <li class="d-flex align-items-center">
+                                        <a>@user.FName @user.LName</a>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <i class="bi bi-dot"></i>
+                                        <a>
+                                            <time datetime="@blog.CreatedDate.ToString()">@blog.CreatedDate.ToString("MMMM") @blog.CreatedDate.Day , @blog.CreatedDate.Year</time>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <h2 class="title">
+                                <a asp-action="Details" asp-route-id="@blog.Id">@blog.Title</a>
+                            </h2>
+                        </div>
+                    </article>
+                }
+            }
+        </div>
+    </div>
+</section>
+<!-- Blog Pagination Section -->
+<section id="blog-pagination" class="blog-pagination section">
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <ul>
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Currentpage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</section><!-- /Blog Pagination Section -->
+<!-- Main JS File -->
+<script src="/js/main.js"></script>
+
+
+<partial src="_ValidationScriptsPartial"></partial>

@@ -1,0 +1,191 @@
+﻿@using Active_Blog_Service.Context
+@inject AppDbContext  _context
+@inject IBlogRepository _blogRepository
+@inject ICommentRepository _commentRepository
+@{
+    ViewData["Title"] = "About Page";
+
+    var countOfBlogs = _blogRepository.GetBlogs().ToList().Count;
+    var countOfUsers = _context.Users.Count();
+    var countOfComments= _commentRepository.GetComments().Count;
+   
+}
+<!-- Page Title -->
+<div class="page-title light-background">
+    <div class="container">
+        <h1>About</h1>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="current">About</li>
+            </ol>
+        </nav>
+    </div>
+</div><!-- End Page Title -->
+<!-- About 2 Section -->
+<section id="about-2" class="about-2 section">
+
+    <div class="container">
+        <div class="content">
+            <div class="row justify-content-center">
+                <div class="col-sm-12 col-md-5 col-lg-4 col-xl-4 order-lg-2 offset-xl-1 mb-4">
+                    <div class="img-wrap text-center text-md-left" data-aos="fade-up" data-aos-delay="100">
+                        <div class="img">
+                            <img src="/img/img_v_3.jpg" alt="circle image" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="offset-md-0 offset-lg-1 col-sm-12 col-md-5 col-lg-5 col-xl-4" data-aos="fade-up">
+                    <div class="px-3">
+                        <span class="content-subtitle">Our Mission</span>
+                        <h2 class="content-title text-start">
+                            The Big Active’s Advice on Managing Complexity
+                        </h2>
+                        <p class="lead">
+                            our mission is to empower and inspire our readers by delivering insightful and engaging content. We strive to create a platform where knowledge meets curiosity, fostering a community of lifelong learners. Through well-researched articles, thought-provoking discussions, and diverse perspectives, we aim to enrich lives and spark meaningful conversations. Join us as we explore new ideas and share stories that resonate and inspire
+                        </p>
+                        <p>
+                            <a href="/Blog/Add" class="btn-get-started">Get Started</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!-- /About 2 Section -->
+<!-- Stats Section -->
+<section id="stats" class="stats section light-background">
+
+    <div class="container">
+
+        <div class="row gy-4 justify-content-center">
+
+            <div class="col-lg-5">
+                <div class="images-overlap">
+                    <img src="/img/img_v_1.jpg" alt="student" class="img-fluid img-1" data-aos="fade-up">
+                </div>
+            </div>
+
+            <div class="col-lg-4 ps-lg-5">
+                <span class="content-subtitle">Why Us</span>
+                <h2 class="content-title">Why We're Your Top Choice</h2>
+                <p class="lead">
+                    Quality Content: We focus on delivering well-researched, engaging, and relevant articles that cater to a wide range of interests and expertise levels.
+                    Expert Voices: Our team of writers and contributors are passionate experts in their fields, providing you with credible insights and diverse perspectives.
+
+                    Community Engagement: We value our readers and strive to create a welcoming community where you can connect, share ideas, and join meaningful conversations.
+    
+                </p>
+                <div class="row mb-5 count-numbers">
+
+                    <!-- Start Stats Item -->
+                    <div class="col-4 counter" data-aos="fade-up" data-aos-delay="100">
+                        <span data-purecounter-separator="true" data-purecounter-start="0" data-purecounter-end="@countOfBlogs" data-purecounter-duration="1" class="purecounter number"></span>
+                        <span class="d-block">Blogs</span>
+                    </div>
+                    <!-- End Stats Item -->
+                    <!-- Start Stats Item -->
+                    <div class="col-4 counter" data-aos="fade-up" data-aos-delay="200">
+                        <span data-purecounter-separator="true" data-purecounter-start="0" data-purecounter-end="@countOfUsers" data-purecounter-duration="1" class="purecounter number"></span>
+                        <span class="d-block">Users</span>
+                    </div>
+                    <!-- End Stats Item -->
+                    <!-- Start Stats Item -->
+                    <div class="col-4 counter" data-aos="fade-up" data-aos-delay="300">
+                        <span data-purecounter-separator="true" data-purecounter-start="0" data-purecounter-end="@countOfComments" data-purecounter-duration="1" class="purecounter number"></span>
+                        <span class="d-block">Comments</span>
+                    </div>
+                    <!-- End Stats Item -->
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section><!-- /Stats Section -->
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials section">
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <p>Happy Customers</p>
+        <h2>Testimonials</h2>
+    </div><!-- End Section Title -->
+
+    <div class="container" data-aos="fade-up">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="swiper init-swiper">
+                    <script type="application/json" class="swiper-config">
+                        {
+                          "loop": true,
+                          "speed": 600,
+                          "autoplay": {
+                            "delay": 5000
+                          },
+                          "slidesPerView": "auto",
+                          "pagination": {
+                            "el": ".swiper-pagination",
+                            "type": "bullets",
+                            "clickable": true
+                          },
+                          "breakpoints": {
+                            "320": {
+                              "slidesPerView": 1,
+                              "spaceBetween": 40
+                            },
+                            "1200": {
+                              "slidesPerView": 1,
+                              "spaceBetween": 1
+                            }
+                          }
+                        }
+                    </script>
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="testimonial mx-auto">
+                                <figure class="img-wrap">
+                                    <img src="/img/testimonials/1.jpg" style="width:80px;height:80px" alt="Image" class="img-fluid">
+                                </figure>
+                                <h3 class="name">Adam Aderson</h3>
+                                <blockquote>
+                                    <p>
+                                        “Love the blog! Always engaging and well-written. Keep up the great work!.”
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="testimonial mx-auto">
+                                <figure class="img-wrap">
+                                    <img src="/img/testimonials/2.jpg" style="width:80px;height:80px" alt="Image" class="img-fluid">
+                                </figure>
+                                <h3 class="name">Lukas Devlin</h3>
+                                <blockquote>
+                                    <p>
+                                        “Fantastic content! Every post is a pleasure to read and full of useful insights.”
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="testimonial mx-auto">
+                                <figure class="img-wrap">
+                                    <img src="/img/testimonials/3.jpg" style="width:80px;height:80px" alt="Image" class="img-fluid">
+                                </figure>
+                                <h3 class="name">John Bryant</h3>
+                                <blockquote>
+                                    <p>
+                                        “This blog never disappoints! Always fresh, informative, and visually appealing.”
+                                    </p>
+                                </blockquote>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section><!-- /Testimonials Section -->

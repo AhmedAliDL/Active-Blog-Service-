@@ -1,0 +1,199 @@
+﻿@model BlogCommentViewModel
+@inject UserManager<User> _userManager
+@inject IBlogRepository _blogRepository
+@{
+    ViewData["Title"] = "Details";
+    var user = await _userManager.FindByIdAsync(Model.blog.UserId);
+    var recentBlogs = _blogRepository.GetBlogsByDate(DateOnly.FromDateTime(DateTime.Now).AddDays(-1));
+}
+
+<!-- Page Title -->
+<div class="page-title light-background">
+    <div class="container">
+        <h1>Blog Details</h1>
+        <nav class="breadcrumbs">
+            <ol>
+                <li><a asp-action="Index" asp-controller="Home">Home</a></li>
+                <li class="current">Blog Details</li>
+            </ol>
+        </nav>
+    </div>
+</div><!-- End Page Title -->
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-lg-8">
+
+            <!-- Blog Details Section -->
+            <section id="blog-details" class="blog-details section">
+                <div class="container">
+
+                    <article class="article">
+
+                        <div class="post-img">
+                            <img src="@Model.blog.Image" alt="" class="img-fluid w-100">
+                        </div>
+
+                        <h2 class="title">@Model.blog.Title</h2>
+                        <h2 class="title">@Model.blog.Title</h2>
+
+                        <div class="meta-top">
+                            <ul>
+                                <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a>@user.FName @user.LName</a></li>
+                                <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a><time datetime="@Model.blog.CreatedDate.ToString()">@Model.blog.CreatedDate.ToString("MMMM dd, yyyy")</time></a></li>
+                                <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="#blog-comments">@Model.blog.Comments.Count Comments</a></li>
+                            </ul>
+                        </div><!-- End meta top -->
+
+                        <div class="content">
+                            @Html.Raw(Model.blog.BlogContent)
+                        </div><!-- End post content -->
+
+                        <div class="meta-bottom">
+                            <i class="bi bi-folder"></i>
+                            <ul class="cats">
+                                <li><a href="#">@Model.blog.Category</a></li>
+                            </ul>
+
+                            <i class="bi bi-tags"></i>
+                            <ul class="tags">
+                                <li><a href="#">Creative</a></li>
+                                <li><a href="#">Tips</a></li>
+                                <li><a href="#">Marketing</a></li>
+                            </ul>
+                        </div><!-- End meta bottom -->
+
+                    </article>
+
+                </div>
+            </section><!-- /Blog Details Section -->
+            <!-- Blog Comments Section -->
+            <section id="blog-comments" class="blog-comments section">
+                <div class="container">
+                    @if (Model.blog.Comments is not null && Model.blog.Comments.Count > 0)
+                    {
+                        <h4 class="comments-count">@Model.blog.Comments.Count Comments</h4>
+
+                        <!-- Loop through each comment -->
+                        @foreach (var comment in Model.blog.Comments)
+                        {
+                            var userOfComment = await _userManager.FindByIdAsync(comment.UserId);
+                            var activeUser = await _userManager.FindByEmailAsync(User.Identity.Name);
+                            <div class="comment-box mb-3">
+                                <div class="d-flex align-items-start">
+                                    <!-- Commenter's Profile Image and Content -->
+                                    <div class="comment-img">
+                                        <img src="@userOfComment.Image" alt="User Image" class="rounded-circle">
+                                    </div>
+                                    <div class="comment-content ms-3">
+                                        <h5>@userOfComment.FName @userOfComment.LName</h5>
+                                        <time datetime="@comment.CreatedDateTime">@comment.CreatedDateTime.ToString("MMMM dd, yyyy")</time>
+                                        <p>@comment.CommentContent</p>
+                                    </div>
+                                    <!-- Three-dot Menu for Actions -->
+                                    @if (comment.UserId == activeUser.Id)
+                                    {
+                                        <div class="dropdown ms-3">
+                                            <button class="btn p-0" id="commentActionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="commentActionsDropdown">
+                                                <li>
+                                                    <form asp-action="EditComment" asp-route-commentId="@comment.Id" asp-controller="Comment" method="post">
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="bi bi-pencil"></i> Edit
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form asp-action="DeleteComment" asp-controller="Comment" asp-route-commentId="@comment.Id" method="post">
+                                                        <button type="submit" class="dropdown-item">
+                                                            <i class="bi bi-trash text-danger"></i> Delete
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <h4 class="comments-count">0 Comments</h4>
+                    }
+                </div>
+            </section><!-- /Blog Comments Section -->
+            <!-- Comment Form Section -->
+            <section id="comment-form" class="comment-form section">
+                <div class="container">
+                    <form asp-action="AddComment" asp-controller="Comment" method="post">
+                        <h4>Post Comment</h4>
+
+                        <!-- Display validation errors -->
+                        <div asp-validation-summary="All" class="text-danger mt-3"></div>
+
+                        <div class="row">
+                            <div class="col form-group">
+                                <textarea asp-for="comment.CommentContent" class="form-control" placeholder="Your Comment*"></textarea>
+                                <span asp-validation-for="comment.CommentContent" class="text-danger"></span>
+
+                                <!-- Hidden input for Blog ID -->
+                                <input type="hidden" asp-for="comment.BlogId" value="@Model.blog.Id" />
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Post Comment</button>
+                        </div>
+                    </form>
+                </div>
+            </section><!-- /Comment Form Section -->
+
+        </div>
+
+        <div class="col-lg-4 sidebar">
+
+            <div class="widgets-container">
+
+                <!-- Blog Author Widget -->
+                <div class="blog-author-widget widget-item">
+                    <div class="d-flex flex-column align-items-center">
+                        <img src="@user.Image" class="rounded-circle flex-shrink-0" alt="">
+                        <h4>@user.FName @user.LName</h4>
+                        <p>
+                            At @Model.blog.Title, we aim to provide insights, tips, and discussions on a variety of topics to help you stay informed, inspired, and engaged. Whether you're here to learn something new, explore a fresh perspective, or dive deep into a subject, we have something for everyone. Our goal is to bring you content that is both relevant and thought-provoking, creating a space for discovery and growth.
+                        </p>
+                    </div>
+                </div><!--/Blog Author Widget -->
+                <!-- Recent Posts Widget -->
+                <div class="recent-posts-widget widget-item">
+                    <h3 class="widget-title">Recent Posts</h3>
+                    @foreach (var blog in recentBlogs)
+                    {
+                        if (blog.Id != Model.blog.Id)
+                        {
+                            <div class="post-item">
+                                <h4><a asp-action="Details" asp-route-id="@blog.Id">@blog.Title</a></h4>
+                                <time datetime="@blog.CreatedDate">@blog.CreatedDate.ToString("MMMM dd, yyyy")</time>
+                            </div>
+                        }
+                    }
+                </div><!-- End Recent Posts Widget -->
+
+            </div><!--/Widgets Container -->
+
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
